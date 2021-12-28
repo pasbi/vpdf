@@ -1,0 +1,21 @@
+name: build-focal-gcc
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+      - run: cmake -S vpdf
+                   -B vpdf-build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
+                   -DBUILD_TESTING=ON
+      - run: cmake --build vpdf-build
+                   --config Release
+                   -j4
+      - run: ctest --test-dir vpdf-build --output-on-failure --no-tests=error

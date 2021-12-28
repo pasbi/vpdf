@@ -1,0 +1,13 @@
+name: Style Checker
+on: [push, pull_request]
+jobs:
+  Check-Style:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get update && sudo apt-get install -y
+          python3
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - run: |
+          stylechecker/main.py --root . --options stylechecker-options.json

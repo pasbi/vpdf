@@ -1,0 +1,104 @@
+name: build-focal-clang
+on: [push, pull_request]
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+      - run: cmake -S vpdf
+                   -B vpdf-build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
+                   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+                   -DCMAKE_CXX_COMPILER=clang++
+                   -DCMAKE_C_COMPILER=clang
+      - uses: actions/upload-artifact@v2
+        with:
+          name: configure
+          path: vpdf-build
+  build:
+    needs: configure
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+      - uses: actions/download-artifact@v2
+        with:
+          name: configure
+          path: vpdf-build
+      - run: cmake --build vpdf-build --config Release -j4
+      - run: tar -cvf vpdf-build.tar vpdf-build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: vpdf-build.tar
+  clazy:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    needs: configure
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+          fetch-depth: 0
+      - run: cd vpdf; current=$(git branch --show-current); git checkout main; git checkout $current;
+      - uses: actions/download-artifact@v2
+        with:
+          name: configure
+          path: vpdf-build
+      - run: |
+          cd vpdf
+          files="$(build-scripts/files.py --mode changed)"
+          cmake --build ../vpdf-build --config Release -j4 --target vpdf_autogen
+          if [ -z "$files" ]; then
+            echo "Skip clazy: No relevant files have changed."
+          else
+            clazy --standalone -p ../vpdf-build --ignore-included-files $files
+          fi
+  clang-tidy:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    needs: configure
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+          fetch-depth: 0
+      - run: cd vpdf; current=$(git branch --show-current); git checkout main; git checkout $current;
+      - uses: actions/download-artifact@v2
+        with:
+          name: configure
+          path: vpdf-build
+      - run: |
+          cd vpdf
+          cmake --build ../vpdf-build --config Release -j4 --target vpdf_autogen
+          files="$(build-scripts/files.py --mode changed)"
+          if [ -z "$files" ]; then
+            echo "Skip clang-tidy: No relevant files have changed."
+          else
+            clang-tidy -p ../vpdf-build $files
+          fi
+  unit-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-focal
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
+      - run: tar -xf vpdf-build.tar
+      - run: ctest --test-dir vpdf-build --output-on-failure --no-tests=error

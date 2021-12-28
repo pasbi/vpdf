@@ -1,0 +1,80 @@
+name: Build on Windows 2019
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+          fetch-depth: 0
+      - uses: ./vpdf/.github/actions/prepare-msys
+      - run: cmake -P vpdf/cmake/patch_getprerequisites_module.cmake
+      - run: cmake -S vpdf
+                   -B $GITHUB_WORKSPACE/vpdf-build
+                   -G"MSYS Makefiles"
+                   -DBUILD_TESTING=TRUE
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/vpdf-install
+      - run: cmake --build $GITHUB_WORKSPACE/vpdf-build --target all --config Release -j4
+      - run: cmake --build $GITHUB_WORKSPACE/vpdf-build --target install --config Release -j4
+      - run: cmake -S vpdf  -B $GITHUB_WORKSPACE/vpdf-build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: |
+            vpdf-build
+            dependencies
+  package:
+    needs: build
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+          fetch-depth: 0
+      - uses: ./vpdf/.github/actions/prepare-msys
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
+      - run: cmake --build $GITHUB_WORKSPACE/vpdf-build --target package --config Release -j4
+      - uses: actions/upload-artifact@v2
+        with:
+          name: vpdf-installer-win2019
+          path: vpdf-build/vpdf-*-win64.exe
+  unit-test:
+    needs: build
+    runs-on: windows-2019
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+      - uses: ./vpdf/.github/actions/prepare-msys
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
+      - run: echo "PYTHONPATH=$(python3 -c "import sys; print(';'.join(sys.path))")" >> $GITHUB_ENV
+      - run: echo "PYTHONHOME=$(python3 -c "import sys; print(sys.executable)")" >> GITHUB_ENV
+      - run: PYTHONPATH="${PYTHONPATH}" PYTHONHOME="${PYTHONHOME}" ctest --test-dir $GITHUB_WORKSPACE/vpdf-build --output-on-failure --no-tests=error
+  release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: package
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: vpdf-installer-win2019
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "vpdf-*.exe"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}

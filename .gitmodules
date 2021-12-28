@@ -1,0 +1,4 @@
+[submodule "stylechecker"]
+	path = stylechecker
+	url = git@github.com:pasbi/stylechecker.git
+	branch = main

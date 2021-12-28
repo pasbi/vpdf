@@ -1,0 +1,40 @@
+name: Create AppImage on Bionic
+on: [push, pull_request]
+jobs:
+  Create-AppImage-Bionic:
+    runs-on: ubuntu-latest
+    container:
+      image: pasbi/ommpfritt-bionic
+      options: --cap-add SYS_ADMIN --device /dev/fuse --privileged
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: vpdf
+          fetch-depth: 0
+      - run: cmake -S vpdf
+                   -B vpdf-build
+                   -GNinja
+                   -DCMAKE_BUILD_TYPE=Release
+                   -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
+                   -DCMAKE_INSTALL_PREFIX=install
+      - run: cmake --build vpdf-build --target install --config Release -j4
+      - run: cmake -S vpdf -B vpdf-build
+      - run: cmake --build vpdf-build --target install --config Release -j4
+      - run: cmake --build vpdf-build --target appimage --config Release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: vpdf-AppImage
+          path: vpdf-build/vpdf*.AppImage
+  Make-Release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: Create-AppImage-Bionic
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: vpdf-AppImage
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "vpdf-*.AppImage"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
