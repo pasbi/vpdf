@@ -17,10 +17,17 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools Pdf PdfWidge
 set(TS_FILES vpdf_de_DE.ts)
 
 set(PROJECT_SOURCES
+        calibration.cpp
+        calibration.h
+        calibrationdialog.cpp
+        calibrationdialog.h
+        calibrationdialog.ui
         main.cpp
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        measurerect.cpp
+        measurerect.h
         pdfview.cpp
         pdfview.h
         ${TS_FILES}

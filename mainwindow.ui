@@ -35,6 +35,16 @@
       <widget class="PdfView" name="pdf_view" native="true"/>
       <widget class="QWidget" name="widget" native="true">
        <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>&amp;Page:</string>
+          </property>
+          <property name="buddy">
+           <cstring>sp_page</cstring>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="1">
          <widget class="QSpinBox" name="sp_page">
           <property name="prefix">
@@ -42,26 +52,56 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="sp_zoom">
-          <property name="prefix">
-           <string>× 10^</string>
-          </property>
-          <property name="suffix">
-           <string/>
-          </property>
-          <property name="minimum">
-           <double>-3.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>3.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.100000000000000</double>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>&amp;Zoom</string>
           </property>
          </widget>
         </item>
         <item row="2" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>&amp;Calibration:</string>
+          </property>
+          <property name="buddy">
+           <cstring>cb_calibration</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="cb_calibration">
+          <item>
+           <property name="text">
+            <string>Pixel</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>PDF units</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Manual</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="pb_calibrate">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>c&amp;alibrate ...</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -73,6 +113,30 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="1" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="pb_zoom_out">
+            <property name="text">
+             <string>-</string>
+            </property>
+            <property name="shortcut">
+             <string>-</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pb_zoom_in">
+            <property name="text">
+             <string>+</string>
+            </property>
+            <property name="shortcut">
+             <string>+</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
