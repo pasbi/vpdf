@@ -56,3 +56,48 @@ set_target_properties(vpdf PROPERTIES
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(vpdf)
 endif()
+
+install(TARGETS vpdf RUNTIME DESTINATION bin)
+
+if (WIN32)
+  set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+  include(InstallRequiredSystemLibraries)
+  execute_process(COMMAND "${qt_qmake_location}" -query QT_INSTALL_PREFIX
+      OUTPUT_VARIABLE qt_install_prefix
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  execute_process(COMMAND "${qt_qmake_location}" -query QT_INSTALL_PLUGINS
+      OUTPUT_VARIABLE qt_install_plugins
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
+  get_filename_component(MinGW_bin_path ${CMAKE_CXX_COMPILER} PATH)
+
+  # These two dependencies are strange:
+  # I don't know why this project depdends on them.
+  # On my PC, fixup_bundle finds them and installs and packages them correctly.
+  # On github's CI, however, these files are not installed/packaged, which results in a corrupted
+  # artifact (the installed application will not be executable).
+  install(FILES "${MinGW_bin_path}/libssl-1_1-x64.dll" "${MinGW_bin_path}/libcrypto-1_1-x64.dll"
+          TYPE BIN)
+
+  install(CODE "
+    include(BundleUtilities)
+    execute_process(COMMAND
+        \"${qt_install_prefix}/bin/windeployqt.exe\"
+        \"\${CMAKE_INSTALL_PREFIX}/bin/vpdf.exe\"
+    )
+    fixup_bundle(
+      \"\${CMAKE_INSTALL_PREFIX}/bin/vpdf.exe\"
+      \"\"
+      \"\"
+    )"
+    COMPONENT Runtime
+  )
+endif()
+
+configure_file(${CMAKE_SOURCE_DIR}/cmake/make-appimage.sh.in ${CMAKE_BINARY_DIR}/make-appimage.sh @ONLY)
+add_custom_target(appimage
+                  COMMAND "${CMAKE_BINARY_DIR}/make-appimage.sh"
+                  COMMENT "Packing AppImage"
+)
