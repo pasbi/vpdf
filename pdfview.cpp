@@ -105,6 +105,10 @@ void PdfView::paintEvent(QPaintEvent*)
     const auto color = m_calibration_dialog == nullptr ? Qt::red : Qt::blue;
 
     QPainter painter(this);
+    auto font = painter.font();
+    font.setBold(true);
+    font.setPixelSize(20);
+    painter.setFont(font);
     painter.setRenderHint(QPainter::Antialiasing);
     QPen pen;
     pen.setColor(color);
@@ -113,7 +117,7 @@ void PdfView::paintEvent(QPaintEvent*)
     painter.setPen(pen);
     painter.drawLine(m_last_press_pos, m_current_pos);
 
-    pen.setStyle(Qt::DotLine);
+    pen.setStyle(Qt::SolidLine);
     painter.setPen(pen);
 
     const MeasureRect measure_rect{m_last_press_pos, m_current_pos, "px"};
@@ -132,6 +136,7 @@ void PdfView::paintEvent(QPaintEvent*)
     const auto calibrated = m_calibration.apply_to(measure_rect, m_zoom_factor);
 
     const auto text = calibrated.info();
+    Q_EMIT text_changed(text);
     const auto fm = painter.fontMetrics();
     const auto text_size = fm.boundingRect(rect(), Qt::AlignLeft, text).size();
     const auto offset = measure_rect.dy() > text_size.height() ? QPoint{0, -text_size.height()} : QPoint{};

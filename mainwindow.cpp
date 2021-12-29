@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
       }
     }());
   });
+  connect(m_ui->pdf_view, &PdfView::text_changed, m_ui->te_info, &QTextEdit::setPlainText);
 }
 
 bool MainWindow::open_document(const QString& filename)

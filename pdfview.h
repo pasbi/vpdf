@@ -19,6 +19,9 @@ public:
   void set_zoom_factor(double factor);
   double zoom_factor() const;
 
+Q_SIGNALS:
+  void text_changed(const QString& text);
+
 protected:
   void mousePressEvent(QMouseEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;
