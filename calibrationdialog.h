@@ -14,9 +14,13 @@ class CalibrationDialog : public QDialog
 public:
   explicit CalibrationDialog(QWidget* parent = nullptr);
   ~CalibrationDialog() override;
+  CalibrationDialog(const CalibrationDialog&) = delete;
+  CalibrationDialog(CalibrationDialog&&) = delete;
+  CalibrationDialog& operator=(const CalibrationDialog&) = delete;
+  CalibrationDialog& operator=(CalibrationDialog&&) = delete;
 
   void set_measure_rect(const MeasureRect& rect);
-  Calibration calibration() const;
+  [[nodiscard]] Calibration calibration() const;
 
 public Q_SLOTS:
   void on_pb_calibrate_dx_clicked();

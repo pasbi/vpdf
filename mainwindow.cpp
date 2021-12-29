@@ -79,6 +79,7 @@ void MainWindow::on_action_Open_triggered()
   }
 }
 
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void MainWindow::on_action_Exit_triggered()
 {
   QApplication::quit();
@@ -92,7 +93,7 @@ void MainWindow::on_sp_page_valueChanged(int page)
 void MainWindow::zoom(int increment)
 {
   m_zoom = std::clamp(m_zoom + increment, static_cast<std::size_t>(0), zoom_levels.size() - 1);
-  m_ui->pdf_view->set_zoom_factor(zoom_levels[m_zoom]);
+  m_ui->pdf_view->set_zoom_factor(zoom_levels.at(m_zoom));
 }
 
 void MainWindow::on_pb_calibrate_clicked()

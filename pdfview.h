@@ -17,7 +17,6 @@ public:
   void set_document(Poppler::Document& document);
   void set_page(int page);
   void set_zoom_factor(double factor);
-  double zoom_factor() const;
 
 Q_SIGNALS:
   void text_changed(const QString& text);
@@ -43,4 +42,5 @@ private:
 
   const QPixmap& render();
   QPixmap m_cache;
+  void draw_measure(QPainter& painter, const QColor& color);
 };

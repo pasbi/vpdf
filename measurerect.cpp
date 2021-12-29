@@ -64,7 +64,7 @@ std::pair<QLineF, QLineF> MeasureRect::end_cross(const QSize& size) const
   return cross(m_end, size);
 }
 
-const QString MeasureRect::info() const
+QString MeasureRect::info() const
 {
   return QString{"Δx = %2 %1\nΔy = %3 %1\nΔ = %4 %1\nA= %5 %1"}
            .arg(m_unit).arg(dx()).arg(dy()).arg(d()).arg(area()) + "²";

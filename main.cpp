@@ -16,16 +16,16 @@ int main(int argc, char *argv[])
   for (const QString &locale : uiLanguages) {
     const QString baseName = "vpdf_" + QLocale(locale).name();
     if (translator.load(":/i18n/" + baseName)) {
-      a.installTranslator(&translator);
+      QApplication::installTranslator(&translator);
       break;
     }
   }
 
   MainWindow w;
-  if (a.arguments().size() == 2) {
-    w.open_document(a.arguments().at(1));
+  if (const auto args = QApplication::arguments(); args.size() == 2) {
+    w.open_document(args.at(1));
   }
 
   w.show();
-  return a.exec();
+  return QApplication::exec();
 }

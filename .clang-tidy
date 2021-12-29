@@ -1,0 +1,35 @@
+Checks: '-*,
+         bugprone-*,
+         clang-*,
+         cppcoreguidelines-*,
+         misc-*,
+         modernize-*,
+         openmp-*,
+         performance-*,
+         portability-*,
+         readability-*,
+         -bugprone-branch-clone,
+         -bugprone-exception-escape,
+         -misc-no-recursion,
+         -misc-non-private-member-variables-in-classes,
+         -cppcoreguidelines-non-private-member-variables-in-classes,
+         -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+         -cppcoreguidelines-pro-type-vararg,
+         -modernize-pass-by-value,
+         -modernize-use-trailing-return-type,
+         -readability-else-after-return,
+         -readability-named-parameter,
+         -readability-redundant-access-specifiers,
+         -clang-analyzer-cplusplus.NewDeleteLeaks,
+         -readability-uppercase-literal-suffix'
+
+# clang-analyzer-cplusplus.NewDeleteLeaks           # False positives with QTimer::singleShot even when using `// NOLINTNEXTLINE`
+
+WarningsAsErrors: '*'
+CheckOptions:
+- key: readability-magic-numbers.IgnoredFloatingPointValues
+  value: '1.0;2.0'
+- key: cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
+  value: '1.0;2.0'
+- key: bugprone-easily-swappable-parameters.MinimumLength
+  value: 3

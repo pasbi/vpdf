@@ -16,6 +16,10 @@ class MainWindow : public QMainWindow
 public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow() override;
+  MainWindow(const MainWindow&) = delete;
+  MainWindow(MainWindow&&) = delete;
+  MainWindow& operator=(const MainWindow&) = delete;
+  MainWindow& operator=(MainWindow&&) = delete;
   bool open_document(const QString& filename);
   void zoom(int increment);
 
