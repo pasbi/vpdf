@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Comment=Measure PDF
+Name=vpdf
+Exec=vpdf
+Categories=Utility;

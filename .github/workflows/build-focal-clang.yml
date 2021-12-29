@@ -57,10 +57,10 @@ jobs:
           path: vpdf-build
       - run: |
           cd vpdf
-          files="$(build-scripts/files.py --mode changed)"
+          files="$(build-scripts/files.py --mode all)"
           cmake --build ../vpdf-build --config Release -j4 --target vpdf_autogen
           if [ -z "$files" ]; then
-            echo "Skip clazy: No relevant files have changed."
+            echo "Skip clazy: No relevant files."
           else
             clazy --standalone -p ../vpdf-build --ignore-included-files $files
           fi
@@ -82,9 +82,9 @@ jobs:
       - run: |
           cd vpdf
           cmake --build ../vpdf-build --config Release -j4 --target vpdf_autogen
-          files="$(build-scripts/files.py --mode changed)"
+          files="$(build-scripts/files.py --mode all)"
           if [ -z "$files" ]; then
-            echo "Skip clang-tidy: No relevant files have changed."
+            echo "Skip clang-tidy: No relevant files."
           else
             clang-tidy -p ../vpdf-build $files
           fi
