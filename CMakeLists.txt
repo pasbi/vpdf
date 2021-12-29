@@ -44,6 +44,11 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
+get_target_property(qt_qmake_location Qt5::qmake IMPORTED_LOCATION)
+execute_process(COMMAND ${qt_qmake_location} -query QT_INSTALL_TRANSLATIONS
+                OUTPUT_VARIABLE qt_qm_path
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 target_link_libraries(vpdf PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
                                    poppler-qt5)
 
