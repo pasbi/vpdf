@@ -14,8 +14,6 @@ jobs:
                    -GNinja
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_PREFIX_PATH="${QT_PREFIX}"
-                   -DBUILD_TESTING=ON
       - run: cmake --build vpdf-build
                    --config Release
                    -j4
-      - run: ctest --test-dir vpdf-build --output-on-failure --no-tests=error

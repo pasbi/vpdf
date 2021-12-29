@@ -16,7 +16,6 @@ jobs:
       - run: cmake -S vpdf
                    -B $GITHUB_WORKSPACE/vpdf-build
                    -G"MSYS Makefiles"
-                   -DBUILD_TESTING=TRUE
                    -DCMAKE_BUILD_TYPE=Release
                    -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/vpdf-install
       - run: cmake --build $GITHUB_WORKSPACE/vpdf-build --target all --config Release -j4
@@ -48,23 +47,6 @@ jobs:
         with:
           name: vpdf-installer-win2019
           path: vpdf-build/vpdf-*-win64.exe
-  unit-test:
-    needs: build
-    runs-on: windows-2019
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          path: vpdf
-      - uses: ./vpdf/.github/actions/prepare-msys
-      - uses: actions/download-artifact@v2
-        with:
-          name: build
-      - run: echo "PYTHONPATH=$(python3 -c "import sys; print(';'.join(sys.path))")" >> $GITHUB_ENV
-      - run: echo "PYTHONHOME=$(python3 -c "import sys; print(sys.executable)")" >> GITHUB_ENV
-      - run: PYTHONPATH="${PYTHONPATH}" PYTHONHOME="${PYTHONHOME}" ctest --test-dir $GITHUB_WORKSPACE/vpdf-build --output-on-failure --no-tests=error
   release:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
