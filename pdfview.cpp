@@ -163,4 +163,3 @@ const QPixmap& PdfView::render()
   }
   return m_cache;
 }
-

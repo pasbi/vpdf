@@ -115,4 +115,3 @@ void MainWindow::on_pb_zoom_out_clicked()
 {
   zoom(-1);
 }
-
