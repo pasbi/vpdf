@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QPdfDocument>
+#include <poppler/qt5/poppler-qt5.h>
 
 QT_BEGIN_NAMESPACE
   namespace Ui { class MainWindow; }
@@ -32,5 +32,5 @@ private:
   std::size_t m_zoom = 4;
   std::unique_ptr<Ui::MainWindow> m_ui;
   std::unique_ptr<CalibrationDialog> m_calibration_dialog;
-  QPdfDocument m_doc;
+  std::unique_ptr<Poppler::Document> m_doc;
 };

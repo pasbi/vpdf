@@ -69,95 +69,95 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="41"/>
+        <location filename="mainwindow.ui" line="48"/>
         <source>&amp;Page:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="51"/>
+        <location filename="mainwindow.ui" line="61"/>
         <source>Page </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="58"/>
+        <location filename="mainwindow.ui" line="68"/>
         <source>&amp;Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="65"/>
+        <location filename="mainwindow.ui" line="75"/>
         <source>&amp;Calibration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="76"/>
+        <location filename="mainwindow.ui" line="86"/>
         <source>Pixel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="81"/>
+        <location filename="mainwindow.ui" line="91"/>
         <source>PDF units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="86"/>
+        <location filename="mainwindow.ui" line="96"/>
         <source>Manual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="97"/>
+        <location filename="mainwindow.ui" line="107"/>
         <source>c&amp;alibrate ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.ui" line="122"/>
-        <location filename="mainwindow.ui" line="125"/>
-        <source>-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="132"/>
         <location filename="mainwindow.ui" line="135"/>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.ui" line="142"/>
+        <location filename="mainwindow.ui" line="145"/>
         <source>+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="158"/>
+        <location filename="mainwindow.ui" line="168"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="168"/>
+        <location filename="mainwindow.ui" line="178"/>
         <source>&amp;Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="171"/>
+        <location filename="mainwindow.ui" line="181"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="176"/>
+        <location filename="mainwindow.ui" line="186"/>
         <source>&amp;Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="71"/>
+        <location filename="mainwindow.cpp" line="53"/>
+        <source>Failed to open PDF document %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="74"/>
         <source>Open PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="73"/>
+        <location filename="mainwindow.cpp" line="76"/>
         <source>PDF documents (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="54"/>
+        <location filename="mainwindow.cpp" line="53"/>
         <source>Failed to open PDF</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="55"/>
-        <source>Failed to open PDF document %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

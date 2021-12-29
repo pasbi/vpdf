@@ -14,8 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 include(GetGitRevisionDescription)
 
-find_package(QT NAMES Qt5 COMPONENTS Widgets LinguistTools Pdf PdfWidgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools Pdf PdfWidgets REQUIRED)
+find_package(QT NAMES Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
 
 set(TS_FILES vpdf_de_DE.ts)
 
@@ -45,8 +45,7 @@ else()
 endif()
 
 target_link_libraries(vpdf PRIVATE Qt${QT_VERSION_MAJOR}::Widgets
-                                   Qt${QT_VERSION_MAJOR}::Pdf
-                                   Qt${QT_VERSION_MAJOR}::PdfWidgets)
+                                   poppler-qt5)
 
 set_target_properties(vpdf PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

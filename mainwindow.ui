@@ -32,7 +32,14 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="PdfView" name="pdf_view" native="true"/>
+      <widget class="PdfView" name="pdf_view" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
       <widget class="QWidget" name="widget" native="true">
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
@@ -47,6 +54,9 @@
         </item>
         <item row="0" column="1">
          <widget class="QSpinBox" name="sp_page">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="prefix">
            <string>Page </string>
           </property>

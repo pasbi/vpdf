@@ -1,10 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QtPdfWidgets/QPdfView>
 #include <QFileDialog>
 #include <QSettings>
 #include <QMessageBox>
-#include <QPdfPageNavigation>
 #include <QDebug>
 #include <cmath>
 #include "pdfview.h"
@@ -25,7 +23,6 @@ MainWindow::MainWindow(QWidget *parent)
   , m_calibration_dialog(std::make_unique<CalibrationDialog>(this))
 {
   m_ui->setupUi(this);
-  m_ui->pdf_view->setDocument(&m_doc);
   connect(m_calibration_dialog.get(), &QDialog::finished, m_ui->pdf_view, &PdfView::stop_calibration_mode);
   connect(m_calibration_dialog.get(), &QDialog::accepted, m_ui->pdf_view, [this]() {
     m_ui->pdf_view->set_calibration(m_calibration_dialog->calibration());
@@ -49,14 +46,19 @@ MainWindow::MainWindow(QWidget *parent)
 
 bool MainWindow::open_document(const QString& filename)
 {
-  if (const auto error = m_doc.load(filename); error != QPdfDocument::NoError) {
-    QMessageBox::critical(this,
-                          tr("Failed to open PDF"),
-                          tr("Failed to open PDF document %1: %2").arg(filename).arg(error));
+  m_doc.reset(Poppler::Document::load(filename));
+  m_doc->setRenderBackend(Poppler::Document::ArthurBackend);
+  if (m_doc == nullptr) {
+    QMessageBox::critical(this, tr("Failed to open PDF"), tr("Failed to open PDF document %1"));
+    m_ui->sp_page->setEnabled(false);
     return false;
   }
 
-  m_ui->sp_page->setRange(1, m_doc.pageCount());
+  m_ui->sp_page->setRange(1, m_doc->numPages());
+  m_ui->sp_page->setEnabled(true);
+  m_ui->pdf_view->set_document(*m_doc);
+  m_ui->sp_page->setValue(1);
+  m_ui->pdf_view->set_page(0);
 
   return true;
 }
@@ -83,13 +85,13 @@ void MainWindow::on_action_Exit_triggered()
 
 void MainWindow::on_sp_page_valueChanged(int page)
 {
-  m_ui->pdf_view->pageNavigation()->setCurrentPage(page - 1);
+  m_ui->pdf_view->set_page(page - 1);
 }
 
 void MainWindow::zoom(int increment)
 {
   m_zoom = std::clamp(m_zoom + increment, static_cast<std::size_t>(0), zoom_levels.size() - 1);
-  m_ui->pdf_view->setZoomFactor(zoom_levels[m_zoom]);
+  m_ui->pdf_view->set_zoom_factor(zoom_levels[m_zoom]);
 }
 
 void MainWindow::on_pb_calibrate_clicked()

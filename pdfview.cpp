@@ -1,7 +1,6 @@
 #include "pdfview.h"
 #include "calibration.h"
 #include "calibrationdialog.h"
-#include <QPdfPageNavigation>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QPainter>
@@ -9,33 +8,57 @@
 #include <cmath>
 #include "measurerect.h"
 
-namespace
+PdfView::PdfView(QWidget* parent)
+  : QWidget(parent)
 {
-
-void scroll(QScrollBar& scroll_bar, int d)
-{
-  const auto v = std::clamp(scroll_bar.value() + d, scroll_bar.minimum(), scroll_bar.maximum());
-  scroll_bar.setValue(v);
 }
-
-}  // namespace
 
 void PdfView::start_calibration_mode(CalibrationDialog& calibration_dialog)
 {
   m_calibration_dialog = &calibration_dialog;
-  viewport()->update();
+  update();
 }
 
 void PdfView::stop_calibration_mode()
 {
   m_calibration_dialog = nullptr;
-  viewport()->update();
+  update();
 }
 
 void PdfView::set_calibration(const Calibration& calibration)
 {
   m_calibration = calibration;
-  viewport()->update();
+  update();
+}
+
+void PdfView::set_document(Poppler::Document& document)
+{
+  m_cache = {};
+  m_document = &document;
+  update();
+}
+
+void PdfView::set_page(int page)
+{
+  if (m_document == nullptr) {
+    m_page.reset();
+  } else {
+    m_page.reset(m_document->page(page));
+  }
+  m_cache = {};
+  update();
+}
+
+void PdfView::set_zoom_factor(double factor)
+{
+  m_zoom_factor = factor;
+  m_cache = {};
+  update();
+}
+
+double PdfView::zoom_factor() const
+{
+  return m_zoom_factor;
 }
 
 void PdfView::mousePressEvent(QMouseEvent* e)
@@ -52,31 +75,36 @@ void PdfView::mouseMoveEvent(QMouseEvent* e)
     set_cursor_visible(false);
     m_draw_measure = true;
   } else {
-    const auto diff = m_last_pos - m_current_pos;
-    ::scroll(*horizontalScrollBar(), diff.x());
-    ::scroll(*verticalScrollBar(), diff.y());
+    m_pan += m_last_pos - m_current_pos;
   }
   QWidget::mouseMoveEvent(e);
-  viewport()->update();
+  update();
 
   m_last_pos = e->pos();
 }
 
-void PdfView::mouseReleaseEvent(QMouseEvent* e)
+void PdfView::mouseReleaseEvent(QMouseEvent*)
 {
   set_cursor_visible(true);
   m_draw_measure = false;
-  QPdfView::mouseReleaseEvent(e);
-  viewport()->update();
+  update();
 }
 
-void PdfView::paintEvent(QPaintEvent *e)
+void PdfView::paintEvent(QPaintEvent*)
 {
-  QPdfView::paintEvent(e);
+  if (m_page == nullptr) {
+    return;
+  }
+
+  QPainter painter{this};
+  const auto& pixmap = render();
+  painter.drawPixmap(rect(), pixmap, {m_pan, size()});
+//  painter.drawPixmap({m_pan, size()}, pixmap, pixmap.rect());
+
   if (m_draw_measure) {
     const auto color = m_calibration_dialog == nullptr ? Qt::red : Qt::blue;
 
-    QPainter painter(viewport());
+    QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     QPen pen;
     pen.setColor(color);
@@ -94,14 +122,14 @@ void PdfView::paintEvent(QPaintEvent *e)
       painter.drawLine(a);
       painter.drawLine(b);
     };
-    draw_cross(measure_rect.start_cross(viewport()->size()));
-    draw_cross(measure_rect.end_cross(viewport()->size()));
+    draw_cross(measure_rect.start_cross(size()));
+    draw_cross(measure_rect.end_cross(size()));
 
     if (m_calibration_dialog != nullptr) {
-      m_calibration_dialog->set_measure_rect(measure_rect.to_unit("", 1.0 / zoomFactor()));
+      m_calibration_dialog->set_measure_rect(measure_rect.to_unit("", 1.0 / m_zoom_factor));
     }
 
-    const auto calibrated = m_calibration.apply_to(measure_rect, zoomFactor());
+    const auto calibrated = m_calibration.apply_to(measure_rect, m_zoom_factor);
 
     const auto text = calibrated.info();
     const auto fm = painter.fontMetrics();
@@ -116,5 +144,18 @@ void PdfView::set_cursor_visible(bool visible)
   auto cursor = this->cursor();
   cursor.setShape(visible ? Qt::ArrowCursor : Qt::BlankCursor);
   setCursor(cursor);
+}
+
+const QPixmap& PdfView::render()
+{
+  if (m_cache.isNull()) {
+    m_cache = QPixmap{(m_page->pageSizeF() * m_zoom_factor).toSize()};
+    QPainter painter{&m_cache};
+    painter.fillRect(m_cache.rect(), Qt::black);
+    painter.setRenderHint(QPainter::Antialiasing);
+    const auto s = 72 * m_zoom_factor;
+    m_page->renderToPainter(&painter, s, s);
+  }
+  return m_cache;
 }
 
