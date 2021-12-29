@@ -58,6 +58,7 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 install(TARGETS vpdf RUNTIME DESTINATION bin)
+include(Packaging)
 
 if (WIN32)
   set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
