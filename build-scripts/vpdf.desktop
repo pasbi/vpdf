@@ -3,4 +3,5 @@ Type=Application
 Comment=Measure PDF
 Name=vpdf
 Exec=vpdf
+Icon=vpdf
 Categories=Utility;

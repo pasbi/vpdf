@@ -10,6 +10,13 @@ cp @CMAKE_INSTALL_PREFIX@/bin/vpdf $appdir/usr/bin/
 mkdir -p $appdir/usr/share/applications
 cp @CMAKE_SOURCE_DIR@/build-scripts/vpdf.desktop $appdir/usr/share/applications/
 
+for resolution in 16 22 32 48 64 128 256; do
+  dir="$appdir/usr/share/icons/hicolor/scalable/apps/${resolution}x${resolution}/"
+  mkdir -p "$dir"
+  convert @CMAKE_SOURCE_DIR@/icons/vpdf_512.png -resize ${resolution}x${resolution} "$dir/vpdf_${resolution}.png"
+done
+cp @CMAKE_SOURCE_DIR@/icons/vpdf_512.png "$appdir/vpdf.png"
+
 mkdir -p $appdir/usr/lib
 cp -r /usr/lib/@python_major_minor@ $appdir/usr/lib
 cp -r /usr/lib/@python_major@ $appdir/usr/lib  # makes many distpackages available, but also makes the appimage much bigger
