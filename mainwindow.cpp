@@ -11,9 +11,6 @@
 
 namespace
 {
-  constexpr auto index_pixel = 0;
-  constexpr auto index_pdf_unit = 1;
-  constexpr auto index_manual = 2;
   constexpr auto zoom_levels = std::array{0.1, 0.3, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0, 5.0, 7.0, 10.0, 15.0};
 }  // namespace
 
@@ -27,22 +24,9 @@ MainWindow::MainWindow(QWidget *parent)
   connect(m_calibration_dialog.get(), &QDialog::accepted, m_ui->pdf_view, [this]() {
     m_ui->pdf_view->set_calibration(m_calibration_dialog->calibration());
   });
-  connect(m_ui->cb_calibration, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int index) {
-    m_ui->pdf_view->set_calibration([index, this]() {
-      switch (index) {
-      case index_pixel:
-        return Calibration::pixel_calibration();
-      case index_pdf_unit:
-        return Calibration::unit_calibration("", 1.0);
-      case index_manual:
-        return m_calibration_dialog->calibration();
-      default:
-        Q_UNREACHABLE();
-        return Calibration::pixel_calibration();
-      }
-    }());
-  });
+  m_ui->pdf_view->set_calibration(m_calibration_dialog->calibration());
   connect(m_ui->pdf_view, &PdfView::text_changed, m_ui->te_info, &QTextEdit::setPlainText);
+
 }
 
 bool MainWindow::open_document(const QString& filename)
@@ -100,11 +84,6 @@ void MainWindow::on_pb_calibrate_clicked()
 {
   m_ui->pdf_view->start_calibration_mode(*m_calibration_dialog);
   m_calibration_dialog->show();
-}
-
-void MainWindow::on_cb_calibration_currentIndexChanged(int index)
-{
-  m_ui->pb_calibrate->setEnabled(index_manual == index);
 }
 
 void MainWindow::on_pb_zoom_in_clicked()

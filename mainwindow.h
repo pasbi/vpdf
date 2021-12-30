@@ -28,7 +28,6 @@ private Q_SLOTS:
   void on_action_Exit_triggered();
   void on_sp_page_valueChanged(int page);
   void on_pb_calibrate_clicked();
-  void on_cb_calibration_currentIndexChanged(int index);
   void on_pb_zoom_in_clicked();
   void on_pb_zoom_out_clicked();
 

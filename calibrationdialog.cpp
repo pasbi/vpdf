@@ -10,6 +10,12 @@ CalibrationDialog::CalibrationDialog(QWidget* parent)
   m_ui->setupUi(this);
   setModal(false);
   on_cb_unit_currentTextChanged(m_ui->cb_unit->currentText());
+  m_calibration.restore();
+}
+
+CalibrationDialog::~CalibrationDialog()
+{
+  m_calibration.store();
 }
 
 void CalibrationDialog::set_measure_rect(const MeasureRect& rect)
@@ -50,7 +56,5 @@ void CalibrationDialog::on_cb_unit_currentTextChanged(const QString& text)
 void CalibrationDialog::compute_calibration(double measure)
 {
   const auto factor = m_ui->sp_user_value->value() / measure;
-  m_calibration = Calibration::unit_calibration(m_ui->cb_unit->currentText(), factor);
+  m_calibration = Calibration{m_ui->cb_unit->currentText(), factor};
 }
-
-CalibrationDialog::~CalibrationDialog() = default;
