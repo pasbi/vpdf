@@ -36,6 +36,14 @@ set(PROJECT_SOURCES
         ${TS_FILES}
 )
 
+
+get_target_property(qt5_qmake_location Qt5::qmake IMPORTED_LOCATION)
+execute_process(COMMAND ${qt5_qmake_location} -query QT_INSTALL_TRANSLATIONS
+                OUTPUT_VARIABLE QT_QM_PATH
+                OUTPUT_STRIP_TRAILING_WHITESPACE)
+configure_file(${QT_QM_PATH}/qtbase_de.qm ${CMAKE_BINARY_DIR})
+configure_file(resources.qrc ${CMAKE_BINARY_DIR} COPYONLY)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(vpdf MANUAL_FINALIZATION ${PROJECT_SOURCES})
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
@@ -43,6 +51,7 @@ else()
     add_executable(vpdf ${PROJECT_SOURCES})
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
+target_sources(vpdf PUBLIC ${QM_FILES} ${CMAKE_BINARY_DIR}/resources.qrc)
 
 get_target_property(qt_qmake_location Qt5::qmake IMPORTED_LOCATION)
 execute_process(COMMAND ${qt_qmake_location} -query QT_INSTALL_TRANSLATIONS

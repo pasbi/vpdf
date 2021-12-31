@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/i18n">
+      <file>vpdf_de_DE.qm</file>
+    </qresource>
+</RCC>
