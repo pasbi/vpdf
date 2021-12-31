@@ -44,6 +44,7 @@ bool MainWindow::open_document(const QString& filename)
   m_ui->pdf_view->set_document(*m_doc);
   m_ui->sp_page->setValue(1);
   m_ui->pdf_view->set_page(0);
+  setWindowTitle(QString{"%1 - %2"}.arg(filename, QApplication::applicationDisplayName()));
 
   return true;
 }

@@ -5,7 +5,7 @@
     <name>CalibrationDialog</name>
     <message>
         <location filename="calibrationdialog.ui" line="20"/>
-        <source>Dialog</source>
+        <source>Calibrate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -126,22 +126,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="36"/>
+        <location filename="mainwindow.cpp" line="37"/>
         <source>Failed to open PDF document %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="57"/>
+        <location filename="mainwindow.cpp" line="59"/>
         <source>Open PDF</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="59"/>
+        <location filename="mainwindow.cpp" line="61"/>
         <source>PDF documents (*.pdf)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="36"/>
+        <location filename="mainwindow.cpp" line="37"/>
         <source>Failed to open PDF</source>
         <translation type="unfinished"></translation>
     </message>
